@@ -6,13 +6,12 @@
         "title": "Connect to the device",
         "data": {
           "host": "Host",
-	  "name": "Name",
+	  "name": "Name"
         }
       }
     },
     "error": {
       "cannot_connect": "Failed to connect, please try again",
-      "invalid_auth": "Invalid authentication",
       "unknown": "Unexpected error"
     },
     "abort": {

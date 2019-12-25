@@ -26,11 +26,13 @@ async def validate_input(hass: core.HomeAssistant, data):
         if entry.data[CONF_HOST] == data[CONF_HOST]:
             raise AlreadyConfigured
 
+    _LOGGER.debug("Attempting to connect to %s", data[CONF_HOST])
     spa = BalboaSpaWifi(data[CONF_HOST])
     connected = await spa.connect()
+    _LOGGER.debug("Got connected = %d", connected)
     if not connected:
         raise CannotConnect
-    spa.disconnect()
+    await spa.disconnect()
 
     return {"title": "Balboa Spa"}
 
@@ -49,7 +51,7 @@ class DomainConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 info = await validate_input(self.hass, user_input)
 
                 return self.async_create_entry(
-                    title=info[CONF_NAME],
+                    title=info['title'],
                     data=user_input
                 )
             except AlreadyConfigured:
