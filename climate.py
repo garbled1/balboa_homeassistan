@@ -2,13 +2,16 @@
 import logging
 from typing import List
 
-from pybalboa import BalboaSpaWifi
-from .const import CLIMATE_SUPPORTED_MODES, DOMAIN as BALBOA_DOMAIN
+# from pybalboa import BalboaSpaWifi
+from .const import (
+    CLIMATE_SUPPORTED_MODES,
+    CLIMATE_SUPPORTED_FANSTATES,
+    DOMAIN as BALBOA_DOMAIN
+)
 from . import BalboaEntity
 
-from homeassistant.components.climate import PLATFORM_SCHEMA, ClimateDevice
+from homeassistant.components.climate import ClimateDevice
 from homeassistant.components.climate.const import (
-    DOMAIN,
     HVAC_MODE_OFF,
     HVAC_MODE_AUTO,
     HVAC_MODE_HEAT,
@@ -16,6 +19,11 @@ from homeassistant.components.climate.const import (
     CURRENT_HVAC_HEAT,
     SUPPORT_TARGET_TEMPERATURE,
     SUPPORT_PRESET_MODE,
+    SUPPORT_FAN_MODE,
+    FAN_OFF,
+    FAN_LOW,
+    FAN_MEDIUM,
+    FAN_HIGH,
 )
 from homeassistant.const import (
     CONF_NAME,
@@ -44,20 +52,21 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
 
 class BalboaSpaClimate(BalboaEntity, ClimateDevice):
-    """Representation of a Balboa Spa."""
+    """Representation of a Balboa Spa Climate device."""
 
     @property
     def supported_features(self):
         """Return the list of supported features."""
-        _LOGGER.debug("features")
         features = SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
+
+        if self._client.have_blower():
+            features |= SUPPORT_FAN_MODE
 
         return features
 
     @property
     def hvac_modes(self) -> List[str]:
         """Return the list of supported HVAC modes."""
-        _LOGGER.debug("hvac_modes")
         return CLIMATE_SUPPORTED_MODES
 
     @property
@@ -79,9 +88,28 @@ class BalboaSpaClimate(BalboaEntity, ClimateDevice):
         return CURRENT_HVAC_IDLE
 
     @property
+    def fan_modes(self) -> List[str]:
+        """Return the list of available fan modes."""
+        return CLIMATE_SUPPORTED_FANSTATES
+
+    @property
+    def fan_mode(self) -> str:
+        """Return the current fan mode."""
+        fanmode = self._client.get_blower()
+        if fanmode is None:
+            return FAN_OFF
+        elif fanmode == self._client.BLOWER_OFF:
+            return FAN_OFF
+        elif fanmode == self._client.BLOWER_LOW:
+            return FAN_LOW
+        elif fanmode == self._client.BLOWER_MEDIUM:
+            return FAN_MEDIUM
+        elif fanmode == self._client.BLOWER_HIGH:
+            return FAN_HIGH
+
+    @property
     def name(self):
         """Return the name of the spa."""
-        _LOGGER.debug("name")
         return f'{self._name}'
 
     @property
@@ -92,7 +120,6 @@ class BalboaSpaClimate(BalboaEntity, ClimateDevice):
         because ultimately, we are just reading the display.
         In C, we have half-degree accuracy, in F, whole degree.
         """
-        _LOGGER.debug("prec")
         tscale = self._client.get_tempscale()
         if tscale == self._client.TSCALE_C:
             return PRECISION_HALVES
@@ -101,7 +128,6 @@ class BalboaSpaClimate(BalboaEntity, ClimateDevice):
     @property
     def temperature_unit(self):
         """Return the unit of measurement, as defined by the API."""
-        _LOGGER.debug("Tu")
         tscale = self._client.get_tempscale()
         if tscale == self._client.TSCALE_C:
             return TEMP_CELSIUS
@@ -110,24 +136,18 @@ class BalboaSpaClimate(BalboaEntity, ClimateDevice):
     @property
     def current_temperature(self):
         """Return the current temperature."""
-        _LOGGER.debug("curtem")
         return self._client.get_curtemp()
 
     @property
     def target_temperature(self):
         """Return the target temperature we try to reach."""
-        _LOGGER.debug("tartem = %f", self._client.curtemp)
-        _LOGGER.debug("self_client = %s", str(self._client))
         return self._client.get_settemp()
 
     @property
     def min_temp(self) -> int:
         """Return the minimum temperature supported by the spa."""
-        _LOGGER.debug("asked for mintemp")
         trange = self._client.get_temprange()
         scale = self._client.get_tempscale()
-        xx = self._client.temprange
-        _LOGGER.debug("trange = %d scale = %d xx=%d", trange, scale, xx)
         return self._client.tmin[trange][scale]
 
     @property
@@ -149,7 +169,6 @@ class BalboaSpaClimate(BalboaEntity, ClimateDevice):
 
     async def async_set_temperature(self, **kwargs):
         """Set a new target temperature."""
-        _LOGGER.debug("settemp")
         await self._client.send_temp_change(int(kwargs[ATTR_TEMPERATURE]))
 
     async def async_set_preset_mode(self, preset_mode) -> None:
@@ -157,3 +176,27 @@ class BalboaSpaClimate(BalboaEntity, ClimateDevice):
         modelist = self._client.get_heatmode_stringlist()
         if preset_mode in modelist:
             await self._client.change_heatmode(modelist.index(preset_mode))
+
+    async def async_set_fan_mode(self, fan_mode):
+        """Set new fan mode."""
+        if fan_mode == FAN_OFF:
+            await self._client.change_blower(self._client.BLOWER_OFF)
+        elif fan_mode == FAN_LOW:
+            await self._client.change_blower(self._client.BLOWER_LOW)
+        elif fan_mode == FAN_MEDIUM:
+            await self._client.change_blower(self._client.BLOWER_MEDIUM)
+        elif fan_mode == FAN_HIGH:
+            await self._client.change_blower(self._client.BLOWER_HIGH)
+
+    async def async_set_hvac_mode(self, hvac_mode):
+        """Set new target hvac mode
+        OFF = REST
+        AUTO = READY_IN_REST
+        HEAT = READY
+        """
+        if hvac_mode == HVAC_MODE_HEAT:
+            await self._client.change_heatmode(self._client.HEATMODE_READY)
+        elif hvac_mode == HVAC_MODE_OFF:
+            await self._client.change_heatmode(self._client.HEATMODE_REST)
+        elif hvac_mode == HVAC_MODE_AUTO:
+            await self._client.change_heatmode(self._client.HEATMODE_RNR)

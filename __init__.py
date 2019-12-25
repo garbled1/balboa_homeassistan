@@ -119,7 +119,7 @@ class BalboaEntity(Entity):
 
     @callback
     async def _update_callback(self) -> None:
-        _LOGGER.debug("GOT REQ TO UPDATE STATE")
+        _LOGGER.debug("Updating spa state with new data.")
         self.async_schedule_update_ha_state()
 
     @property
@@ -130,8 +130,7 @@ class BalboaEntity(Entity):
     @property
     def unique_id(self):
         """Set unique_id for this entity."""
-        _LOGGER.debug("uniqueid")
-        return f'{self._name}-{self._client.get_macaddr()}'
+        return f'{self._name}-{self._client.get_macaddr().replace(":","")[-6:]}'
 
     @property
     def assumed_state(self) -> bool:
