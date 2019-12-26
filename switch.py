@@ -16,6 +16,7 @@ async def async_setup_platform(hass, config, async_add_entities,
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
+    """Set up the spa switch devices."""
     spa = hass.data[BALBOA_DOMAIN][entry.entry_id]
     name = entry.data[CONF_NAME]
     devs = []
@@ -58,6 +59,7 @@ class BalboaSpaSwitch(BalboaEntity, SwitchDevice):
 
     @property
     def is_on(self) -> bool:
+        """Return True if the switch is on."""
         if 'mister' in self.switch_key:
             return self._client.get_mister()
         num = int(self.switch_key[-1]) - 1

@@ -19,6 +19,7 @@ async def async_setup_platform(hass, config, async_add_entities,
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
+    """Set up the spa's binary sensors."""
     spa = hass.data[BALBOA_DOMAIN][entry.entry_id]
     name = entry.data[CONF_NAME]
     devs = []
@@ -43,20 +44,18 @@ class BalboaSpaBinarySensor(BalboaEntity, BinarySensorDevice):
 
     @property
     def is_on(self) -> bool:
+        """Return true if the binary sensor is on."""
+        if 'circ_pump' in self.bsensor_key:
+            return self._client.get_circ_pump()
         if 'filter' in self.bsensor_key:
             fmode = self._client.get_filtermode()
             if fmode == self._client.FILTER_OFF:
                 return False
-            if ('filter1' in self.bsensor_key
-                and (fmode == self._client.FILTER_1 or
-                     fmode == self._client.FILTER_1_2)):
+            if 'filter1' in self.bsensor_key and fmode != self._client.FILTER2:
                 return True
-            elif ('filter2' in self.bsensor_key and
-                  fmode >= self._client.FILTER2):
+            if 'filter2' in self.bsensor_key and fmode >= self._client.FILTER2:
                 return True
             return False
-        elif 'circ_pump' in self.bsensor_key:
-            return self._client.get_circ_pump()
         return False
 
     @property

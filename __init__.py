@@ -7,14 +7,14 @@ import voluptuous as vol
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from pybalboa import BalboaSpaWifi
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_NAME,
-    EVENT_HOMEASSISTANT_START,
-)
+from homeassistant.const import CONF_HOST, CONF_NAME
 import homeassistant.helpers.config_validation as cv
 from .const import DOMAIN, BALBOA_PLATFORMS
 from homeassistant.helpers.entity import Entity
+from homeassistant.helpers.dispatcher import (
+    async_dispatcher_connect,
+    async_dispatcher_send,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -72,6 +72,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     for component in BALBOA_PLATFORMS:
         hass.async_create_task(forward_setup(entry, component))
 
+    async def _async_balboa_update_cb():
+        """Primary update callback called from pybalboa."""
+        _LOGGER.debug("Primary update callback triggered")
+        async_dispatcher_send(hass, DOMAIN)
+
+    spa.new_data_cb = _async_balboa_update_cb
+
     return True
 
 
@@ -109,18 +116,16 @@ class BalboaEntity(Entity):
         self.hass = hass
         self._client = client
         self._name = name
-        self.hass.bus.async_listen_once(
-            EVENT_HOMEASSISTANT_START, self.assign_callback
-        )
 
-    async def assign_callback(self, event):
-        """Set up a listener for the first entity."""
-        self._client.new_data_cb = self._update_callback
+    async def async_added_to_hass(self) -> None:
+        """Set up a listener for the entity."""
+        async_dispatcher_connect(self.hass, DOMAIN, self._update_callback)
 
     @callback
-    async def _update_callback(self) -> None:
-        _LOGGER.debug("Updating spa state with new data.")
-        self.async_schedule_update_ha_state()
+    def _update_callback(self) -> None:
+        """Callback to be called from pybalboa when state changes."""
+        _LOGGER.debug("Updating spa state with new data. %s", self._name)
+        self.async_schedule_update_ha_state(force_refresh=True)
 
     @property
     def should_poll(self) -> bool:

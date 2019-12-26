@@ -22,6 +22,7 @@ async def async_setup_platform(hass, config, async_add_entities,
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
+    """Setup the spa's pumps as FAN entities"""
     spa = hass.data[BALBOA_DOMAIN][entry.entry_id]
     name = entry.data[CONF_NAME]
     devs = []
@@ -29,7 +30,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
     pumps = spa.get_pump_list()
 
     for p in range(0, len(pumps)):
-        devs.append(BalboaSpaPump(hass, spa, f'{name}-pump{p}', p))
+        if pumps[p]:
+            devs.append(BalboaSpaPump(hass, spa, f'{name}-pump{p + 1}', p))
 
     async_add_entities(devs, True)
 
@@ -41,10 +43,12 @@ class BalboaSpaPump(BalboaEntity, FanEntity):
         """Initialize the pump."""
         super().__init__(hass, client, name)
         self.pump = pump
+        _LOGGER.debug("Creating pump #%d", pump)
 
     async def async_set_speed(self, speed: str) -> None:
         """Set speed of pump."""
         setto = FAN_SUPPORTED_SPEEDS.index(speed)
+        _LOGGER.debug("set pump %d to speed %d (%s)", self.pump, setto, speed)
         await self._client.change_pump(self.pump, setto)
 
     async def async_turn_on(self, speed: str = None, **kwargs) -> None:
@@ -71,8 +75,9 @@ class BalboaSpaPump(BalboaEntity, FanEntity):
     def speed(self) -> str:
         """Return the current speed."""
         pstate = self._client.get_pump(self.pump)
-        _LOGGER.debug("state = %d pump = %d", pstate, self.pump)
-        if pstate >= len(FAN_SUPPORTED_SPEEDS):
+        _LOGGER.debug("speed %s state = %d pump = %d", self._name, pstate,
+                      self.pump)
+        if pstate >= len(FAN_SUPPORTED_SPEEDS) or pstate < 0:
             return SPEED_OFF
         return FAN_SUPPORTED_SPEEDS[pstate]
 
@@ -80,9 +85,7 @@ class BalboaSpaPump(BalboaEntity, FanEntity):
     def is_on(self):
         """Return true if the pump is on."""
         pstate = self._client.get_pump(self.pump)
-        if pstate:
-            return True
-        return False
+        return bool(pstate)
 
     @property
     def icon(self):
