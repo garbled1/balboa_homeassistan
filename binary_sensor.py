@@ -37,7 +37,7 @@ class BalboaSpaBinarySensor(BalboaEntity, BinarySensorDevice):
     """Representation of a Balboa Spa binary sensor device."""
 
     def __init__(self, hass, client, name, bsensor_key):
-        """Initialize the switch."""
+        """Initialize the binary sensor."""
         super().__init__(hass, client, name)
         self.bsensor_key = bsensor_key
 
