@@ -2,31 +2,30 @@
 import asyncio
 import logging
 import time
+
+from pybalboa import BalboaSpaWifi
 import voluptuous as vol
 
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
-from homeassistant.core import HomeAssistant, callback
-from pybalboa import BalboaSpaWifi
 from homeassistant.const import CONF_HOST, CONF_NAME
+from homeassistant.core import HomeAssistant, callback
 import homeassistant.helpers.config_validation as cv
-from .const import DOMAIN, BALBOA_PLATFORMS
-from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.dispatcher import (
     async_dispatcher_connect,
     async_dispatcher_send,
 )
+from homeassistant.helpers.entity import Entity
+
+from .const import BALBOA_PLATFORMS, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-BALBOA_CONFIG_SCHEMA = vol.Schema({
-    vol.Required(CONF_HOST): cv.string,
-    vol.Required(CONF_NAME): cv.string,
-})
+BALBOA_CONFIG_SCHEMA = vol.Schema(
+    {vol.Required(CONF_HOST): cv.string, vol.Required(CONF_NAME): cv.string}
+)
 
 CONFIG_SCHEMA = vol.Schema(
-    {
-        DOMAIN: vol.All(cv.ensure_list, [BALBOA_CONFIG_SCHEMA])
-    }, extra=vol.ALLOW_EXTRA
+    {DOMAIN: vol.All(cv.ensure_list, [BALBOA_CONFIG_SCHEMA])}, extra=vol.ALLOW_EXTRA
 )
 
 
@@ -123,7 +122,7 @@ class BalboaEntity(Entity):
 
     @callback
     def _update_callback(self) -> None:
-        """Callback to be called from pybalboa when state changes."""
+        """Call from dispatcher when state changes."""
         _LOGGER.debug("Updating spa state with new data. %s", self._name)
         self.async_schedule_update_ha_state(force_refresh=True)
 

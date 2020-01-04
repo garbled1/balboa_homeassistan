@@ -1,22 +1,18 @@
 """Config flow for Balboa Spa integration."""
 import logging
 
+from pybalboa import BalboaSpaWifi
 import voluptuous as vol
 
-from pybalboa import BalboaSpaWifi
-
 from homeassistant import config_entries, core, exceptions
-from homeassistant.const import (CONF_HOST, CONF_NAME)
+from homeassistant.const import CONF_HOST, CONF_NAME
+
 from .const import DOMAIN  # pylint:disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
 
-# TODO adjust the data schema to the data that you need
 DATA_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_HOST): str,
-        vol.Required(CONF_NAME, default="Spa"): str,
-    }
+    {vol.Required(CONF_HOST): str, vol.Required(CONF_NAME, default="Spa"): str}
 )
 
 
@@ -50,10 +46,7 @@ class DomainConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             try:
                 info = await validate_input(self.hass, user_input)
 
-                return self.async_create_entry(
-                    title=info['title'],
-                    data=user_input
-                )
+                return self.async_create_entry(title=info["title"], data=user_input)
             except AlreadyConfigured:
                 return self.async_abort(reason="already_configured")
             except CannotConnect:
