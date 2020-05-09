@@ -46,9 +46,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     """Set up the spa climate device."""
     spa = hass.data[BALBOA_DOMAIN][entry.entry_id]
     name = entry.data[CONF_NAME]
-    devs = []
-    devs.append(BalboaSpaClimate(hass, spa, name))
-    async_add_entities(devs, True)
+    async_add_entities([BalboaSpaClimate(hass, spa, name)], True)
 
 
 class BalboaSpaClimate(BalboaEntity, ClimateDevice):
@@ -110,7 +108,7 @@ class BalboaSpaClimate(BalboaEntity, ClimateDevice):
     @property
     def name(self):
         """Return the name of the spa."""
-        return f"{self._name}"
+        return self._name
 
     @property
     def precision(self):
