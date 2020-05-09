@@ -1,0 +1,6 @@
+{
+    "name": "Balboa Spa",
+    "render_readme": true,
+    "domains", ["binary_sensor", "climate", "fan", "switch"],
+    "iot_class", "Local Push",
+}
