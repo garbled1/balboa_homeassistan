@@ -1,12 +1,13 @@
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
 
-# balboa_homeassistant
+# Balboa Spa integration for home-assistant
 Home assistant integration for a Balboa spa wifi controller.
 
 ## Configuration
 
-There is a config flow for the spa.  The only required parameter is the IP or
-hostname of your spa's wifi adapter.  Simply fill that in.
+There is a config flow for the spa.  After installing, 
+go to integrations, hit + to setup a new integration, search for "Balboa Spa",
+select that, and add the IP address or hostname of your spa's wifi adapter.
 
 ## Screenshot
 
