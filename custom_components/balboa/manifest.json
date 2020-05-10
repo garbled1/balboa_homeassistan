@@ -4,7 +4,7 @@
   "config_flow": true,
   "documentation": "https://www.home-assistant.io/integrations/balboa",
   "requirements": [
-    "pybalboa==0.3"
+    "pybalboa==0.4"
   ],
   "ssdp": [],
   "zeroconf": [],
