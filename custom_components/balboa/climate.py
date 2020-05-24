@@ -81,7 +81,7 @@ class BalboaSpaClimate(BalboaEntity, ClimateDevice):
     def hvac_action(self) -> str:
         """Return the current operation mode."""
         state = self._client.get_heatstate()
-        if state == self._client.ON:
+        if state >= self._client.ON:
             return CURRENT_HVAC_HEAT
         return CURRENT_HVAC_IDLE
 
