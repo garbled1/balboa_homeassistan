@@ -180,7 +180,7 @@ class BalboaSpaClimate(BalboaEntity, ClimateEntity):
     async def async_set_hvac_mode(self, hvac_mode):
         """Set new target hvac mode.
 
-        OFF = REST
+        AUTO = REST
         HEAT = READY
         """
         if hvac_mode == HVAC_MODE_HEAT:
