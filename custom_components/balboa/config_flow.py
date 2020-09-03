@@ -30,7 +30,7 @@ async def validate_input(hass: core.HomeAssistant, data):
         raise CannotConnect
     await spa.disconnect()
 
-    return {"title": "Balboa Spa"}
+    return {"title": data[CONF_NAME]}
 
 
 class DomainConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):

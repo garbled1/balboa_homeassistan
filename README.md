@@ -19,4 +19,4 @@ have a 1-speed, only use LOW and OFF.
 
 ## See also
 
-<https://github.com/garbled1/pybalboa>
+<https://github.com/natekspencer/pybalboa>

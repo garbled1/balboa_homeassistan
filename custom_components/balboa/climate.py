@@ -10,7 +10,6 @@ from homeassistant.components.climate.const import (
     FAN_LOW,
     FAN_MEDIUM,
     FAN_OFF,
-    HVAC_MODE_AUTO,
     HVAC_MODE_HEAT,
     HVAC_MODE_OFF,
     SUPPORT_FAN_MODE,
@@ -37,16 +36,11 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
-    """Set up of the spa is done through async_setup_entry."""
-    pass
-
-
 async def async_setup_entry(hass, entry, async_add_entities):
     """Set up the spa climate device."""
     spa = hass.data[BALBOA_DOMAIN][entry.entry_id]
-    name = entry.data[CONF_NAME]
-    async_add_entities([BalboaSpaClimate(hass, spa, name)], True)
+    device = entry.data[CONF_NAME]
+    async_add_entities([BalboaSpaClimate(hass, spa, device, "Climate")], True)
 
 
 class BalboaSpaClimate(BalboaEntity, ClimateDevice):
@@ -71,10 +65,8 @@ class BalboaSpaClimate(BalboaEntity, ClimateDevice):
     def hvac_mode(self) -> str:
         """Return the current HVAC mode."""
         mode = self._client.get_heatmode()
-        if mode == self._client.HEATMODE_READY:
+        if mode == self._client.HEATMODE_READY or mode == self._client.HEATMODE_RNR:
             return HVAC_MODE_HEAT
-        if mode == self._client.HEATMODE_RNR:
-            return HVAC_MODE_AUTO
         return HVAC_MODE_OFF
 
     @property
@@ -106,9 +98,8 @@ class BalboaSpaClimate(BalboaEntity, ClimateDevice):
             return FAN_HIGH
 
     @property
-    def name(self):
-        """Return the name of the spa."""
-        return self._name
+    def icon(self):
+        return "mdi:hot-tub"
 
     @property
     def precision(self):
@@ -190,12 +181,9 @@ class BalboaSpaClimate(BalboaEntity, ClimateDevice):
         """Set new target hvac mode.
 
         OFF = REST
-        AUTO = READY_IN_REST
         HEAT = READY
         """
         if hvac_mode == HVAC_MODE_HEAT:
             await self._client.change_heatmode(self._client.HEATMODE_READY)
-        elif hvac_mode == HVAC_MODE_OFF:
+        else:
             await self._client.change_heatmode(self._client.HEATMODE_REST)
-        elif hvac_mode == HVAC_MODE_AUTO:
-            await self._client.change_heatmode(self._client.HEATMODE_RNR)

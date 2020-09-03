@@ -10,6 +10,7 @@ from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_NAME
 from homeassistant.core import HomeAssistant, callback
 import homeassistant.helpers.config_validation as cv
+from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
 from homeassistant.helpers.dispatcher import (
     async_dispatcher_connect,
     async_dispatcher_send,
@@ -84,13 +85,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
 
+    _LOGGER.debug("Disconnecting from spa")
     spa = hass.data[DOMAIN][entry.entry_id]
     spa.disconnect()
 
     unload_ok = all(
         await asyncio.gather(
             *[
-                hass.config_entries.async_forward_entry_unload(entry, component)
+                hass.config_entries.async_forward_entry_unload(
+                    entry, component)
                 for component in BALBOA_PLATFORMS
             ]
         )
@@ -110,11 +113,32 @@ class BalboaEntity(Entity):
     accessors.
     """
 
-    def __init__(self, hass, client, name):
+    def __init__(self, hass, client, device, entity, num=None):
         """Initialize the spa."""
         self.hass = hass
         self._client = client
-        self._name = name
+        self._device = device
+        self._entity = entity
+        self._num = num
+        _LOGGER.debug(f'Initializing {device}: {entity}{num or ""}')
+
+    @property
+    def device_info(self):
+        return {
+            "name": self._device,
+            "connections": {(CONNECTION_NETWORK_MAC, self._client.get_macaddr())},
+            "identifiers": {
+                (DOMAIN, self._client.get_macaddr().replace(":", "")[-6:])
+            },
+            "manufacturer": "Balboa",
+            "model": self._client.get_model_name(),
+            "sw_version": self._client.get_ssid(),
+        }
+
+    @property
+    def name(self):
+        """Return the name of the entity."""
+        return f'{self._device}: {self._entity}{self._num or ""}'
 
     async def async_added_to_hass(self) -> None:
         """Set up a listener for the entity."""
@@ -123,7 +147,7 @@ class BalboaEntity(Entity):
     @callback
     def _update_callback(self) -> None:
         """Call from dispatcher when state changes."""
-        _LOGGER.debug("Updating spa state with new data. %s", self._name)
+        _LOGGER.debug(f'Updating {self.name} state with new data.')
         self.async_schedule_update_ha_state(force_refresh=True)
 
     @property
@@ -134,7 +158,7 @@ class BalboaEntity(Entity):
     @property
     def unique_id(self):
         """Set unique_id for this entity."""
-        return f'{self._name}-{self._client.get_macaddr().replace(":","")[-6:]}'
+        return f'{self._device}-{self._entity}{self._num or ""}-{self._client.get_macaddr().replace(":","")[-6:]}'
 
     @property
     def assumed_state(self) -> bool:
