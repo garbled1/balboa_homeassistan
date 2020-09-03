@@ -1,4 +1,4 @@
-"""Config flow for Balboa Spa integration."""
+"""Config flow for Balboa Spa Client integration."""
 import logging
 
 from pybalboa import BalboaSpaWifi

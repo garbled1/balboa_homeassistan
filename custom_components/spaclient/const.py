@@ -1,4 +1,4 @@
-"""Constants for the Balboa Spa integration."""
+"""Constants for the Balboa Spa Client integration."""
 from homeassistant.components.climate.const import (
     FAN_HIGH,
     FAN_LOW,

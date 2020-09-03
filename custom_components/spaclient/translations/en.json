@@ -1,6 +1,6 @@
 {
   "config": {
-    "title": "Balboa Spa",
+    "title": "Balboa Spa Client",
     "step": {
       "user": {
         "title": "Connect to the device",

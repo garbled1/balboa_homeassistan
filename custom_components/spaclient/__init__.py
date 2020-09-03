@@ -1,4 +1,4 @@
-"""The Balboa Spa integration."""
+"""The Balboa Spa Client integration."""
 import asyncio
 import logging
 import time
