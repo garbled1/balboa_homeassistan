@@ -11,7 +11,7 @@ from homeassistant.components.climate.const import (
     FAN_MEDIUM,
     FAN_OFF,
     HVAC_MODE_HEAT,
-    HVAC_MODE_OFF,
+    HVAC_MODE_AUTO,
     SUPPORT_FAN_MODE,
     SUPPORT_PRESET_MODE,
     SUPPORT_TARGET_TEMPERATURE,
@@ -43,7 +43,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     async_add_entities([BalboaSpaClimate(hass, spa, device, "Climate")], True)
 
 
-class BalboaSpaClimate(BalboaEntity, ClimateDevice):
+class BalboaSpaClimate(BalboaEntity, ClimateEntity):
     """Representation of a Balboa Spa Climate device."""
 
     @property
@@ -67,7 +67,7 @@ class BalboaSpaClimate(BalboaEntity, ClimateDevice):
         mode = self._client.get_heatmode()
         if mode == self._client.HEATMODE_READY or mode == self._client.HEATMODE_RNR:
             return HVAC_MODE_HEAT
-        return HVAC_MODE_OFF
+        return HVAC_MODE_AUTO
 
     @property
     def hvac_action(self) -> str:
