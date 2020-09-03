@@ -1,5 +1,5 @@
 {
-  "domain": "balboa",
+  "domain": "spaclient",
   "name": "Balboa Spa",
   "config_flow": true,
   "documentation": "https://www.home-assistant.io/integrations/balboa",
