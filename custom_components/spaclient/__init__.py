@@ -58,7 +58,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         return False
 
     # send config requests, and then listen until we are configured.
-    await spa.send_config_req()
+    await spa.send_mod_ident_req()
     await spa.send_panel_req(0, 1)
     # configured = await spa.listen_until_configured()
 
