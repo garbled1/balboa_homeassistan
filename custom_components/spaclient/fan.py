@@ -23,13 +23,19 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
     for num, value in enumerate(spa.pump_array, 1):
         if value:
-            devs.append(BalboaSpaPump(hass, spa, device, 'Pump', num))
+            devs.append(BalboaSpaPump(hass, spa, device, num, value))
 
     async_add_entities(devs, True)
 
 
 class BalboaSpaPump(BalboaEntity, FanEntity):
     """Representation of a Balboa Spa pump device."""
+
+    def __init__(self, hass, client, device, num, states):
+        """Initialize the switch."""
+        super().__init__(hass, client, device, 'Pump', num)
+        self._speed_list = FAN_SUPPORTED_SPEEDS if states > 1 else None
+        self._supported_features = SUPPORT_SET_SPEED if states > 1 else 0
 
     async def async_set_speed(self, speed: str) -> None:
         """Set speed of pump."""
@@ -50,12 +56,12 @@ class BalboaSpaPump(BalboaEntity, FanEntity):
     @property
     def speed_list(self) -> list:
         """Get the list of available speeds."""
-        return FAN_SUPPORTED_SPEEDS
+        return self._speed_list
 
     @property
     def supported_features(self) -> int:
         """Flag supported features."""
-        return SUPPORT_SET_SPEED
+        return self._supported_features
 
     @property
     def speed(self) -> str:
