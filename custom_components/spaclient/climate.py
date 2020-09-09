@@ -1,6 +1,7 @@
 """Support for Balboa Spa Wifi adaptor."""
 import logging
 from typing import List
+import math
 
 from homeassistant.components.climate import ClimateEntity
 from homeassistant.components.climate.const import (
@@ -102,15 +103,9 @@ class BalboaSpaClimate(BalboaEntity, ClimateEntity):
         return "mdi:hot-tub"
 
     @property
-    def precision(self):
-        """Return the precision of the system.
-
-        Balboa spas return data in C or F depending on how the display is set,
-        because ultimately, we are just reading the display.
-        In C, we have half-degree accuracy, in F, whole degree.
-        """
-        tscale = self._client.get_tempscale()
-        if tscale == self._client.TSCALE_C:
+    def precision(self) -> float:
+        """Return the precision of the system."""
+        if self.hass.config.units.temperature_unit == TEMP_CELSIUS:
             return PRECISION_HALVES
         return PRECISION_WHOLE
 
@@ -158,7 +153,14 @@ class BalboaSpaClimate(BalboaEntity, ClimateEntity):
 
     async def async_set_temperature(self, **kwargs):
         """Set a new target temperature."""
-        await self._client.send_temp_change(int(kwargs[ATTR_TEMPERATURE]))
+        temperature = kwargs[ATTR_TEMPERATURE]
+        spa_unit = self._client.get_tempscale()
+        if spa_unit != self.get_temp_unit():
+            if spa_unit == self._client.TSCALE_F:
+                temperature = math.floor(temperature + 0.5)
+            else:
+                temperature = .5 * round(temperature / .5)
+        await self._client.send_temp_change(temperature)
 
     async def async_set_preset_mode(self, preset_mode) -> None:
         """Set new preset mode."""
@@ -187,3 +189,9 @@ class BalboaSpaClimate(BalboaEntity, ClimateEntity):
             await self._client.change_heatmode(self._client.HEATMODE_READY)
         else:
             await self._client.change_heatmode(self._client.HEATMODE_REST)
+
+    def get_temp_unit(self):
+        """Return the balboa equivalent temperature unit of the system."""
+        if self.hass.config.units.temperature_unit == TEMP_CELSIUS:
+            return self._client.TSCALE_C
+        return self._client.TSCALE_F
