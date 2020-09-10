@@ -64,8 +64,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     _LOGGER.debug("Starting listener and monitor tasks.")
     hass.loop.create_task(spa.listen())
-    hass.loop.create_task(spa.check_connection_status())
     await spa.spa_configured()
+    hass.loop.create_task(spa.check_connection_status())
 
     # At this point we have a configured spa.
     forward_setup = hass.config_entries.async_forward_entry_setup
