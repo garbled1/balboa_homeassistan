@@ -14,10 +14,14 @@ If you have a blower, it will be listed as a "fan" in the climate device for
 the spa.  Currently the code assumes you have a 3-speed blower, if you only
 have a 1-speed, only use LOW and OFF.
 
-## Screenshot
+## Screenshots
 
-![Screenshot](Screenshot_spa.png)
+![Screenshots](Screenshot_spa.png)
 
-## See also
+## Related Projects
 
-<https://github.com/natekspencer/pybalboa>
+* https://github.com/garbled1/balboa_homeassistan - Original repo forked for my code base
+* https://github.com/plmilord/Hass.io-custom-component-spaclient - Another HASS custom component (and source of "spaclient" logos)
+* https://github.com/ccutrer/balboa_worldwide_app - Fountain of knowledge for most of the messages sent from the spa wifi module
+* https://github.com/natekspencer/pybalboa - Python library expanded based on garbled's previous work (https://github.com/garbled1/pybalboa)
+* https://github.com/natekspencer/BwaSpaManager - My SmartThings cloud-based solution
