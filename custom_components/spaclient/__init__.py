@@ -3,19 +3,17 @@ import asyncio
 import logging
 import time
 
-from pybalboa import BalboaSpaWifi
+import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
-
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_NAME
 from homeassistant.core import HomeAssistant, callback
-import homeassistant.helpers.config_validation as cv
+from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
-from homeassistant.helpers.dispatcher import (
-    async_dispatcher_connect,
-    async_dispatcher_send,
-)
+from homeassistant.helpers.dispatcher import (async_dispatcher_connect,
+                                              async_dispatcher_send)
 from homeassistant.helpers.entity import Entity
+from pybalboa import BalboaSpaWifi
 
 from .const import BALBOA_PLATFORMS, DOMAIN
 
@@ -55,7 +53,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     connected = await spa.connect()
     if not connected:
         _LOGGER.error("Failed to connect to spa at %s", host)
-        return False
+        raise ConfigEntryNotReady
 
     # send config requests, and then listen until we are configured.
     await spa.send_mod_ident_req()
