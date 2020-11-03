@@ -1,23 +1,19 @@
 """Support for Balboa Spa Pumps."""
 import logging
 
-from homeassistant.components.fan import (
-    SPEED_LOW,
-    SPEED_OFF,
-    SUPPORT_SET_SPEED,
-    FanEntity,
-)
+from homeassistant.components.fan import (SPEED_LOW, SPEED_OFF,
+                                          SUPPORT_SET_SPEED, FanEntity)
 from homeassistant.const import CONF_NAME
 
 from . import BalboaEntity
-from .const import DOMAIN as BALBOA_DOMAIN, FAN_SUPPORTED_SPEEDS
+from .const import DOMAIN, FAN_SUPPORTED_SPEEDS, SPA
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
     """Set up the spa's pumps as FAN entities."""
-    spa = hass.data[BALBOA_DOMAIN][entry.entry_id]
+    spa = hass.data[DOMAIN][entry.entry_id][SPA]
     device = entry.data[CONF_NAME]
     devs = []
 

@@ -17,5 +17,14 @@
     "abort": {
       "already_configured": "Device is already configured"
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "sync_time": "Sync Home Assistant time with the Balboa Spa Client"
+        }
+      }
+    }
   }
 }

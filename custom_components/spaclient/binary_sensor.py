@@ -1,21 +1,19 @@
 """Support for Balboa Spa binary sensors."""
 import logging
 
-from homeassistant.components.binary_sensor import (
-    DEVICE_CLASS_MOVING,
-    BinarySensorDevice,
-)
+from homeassistant.components.binary_sensor import (DEVICE_CLASS_MOVING,
+                                                    BinarySensorDevice)
 from homeassistant.const import CONF_NAME
 
 from . import BalboaEntity
-from .const import DOMAIN as BALBOA_DOMAIN
+from .const import DOMAIN, SPA
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
     """Set up the spa's binary sensors."""
-    spa = hass.data[BALBOA_DOMAIN][entry.entry_id]
+    spa = hass.data[DOMAIN][entry.entry_id][SPA]
     device = entry.data[CONF_NAME]
     devs = []
 

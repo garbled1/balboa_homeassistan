@@ -5,14 +5,14 @@ from homeassistant.components.switch import DEVICE_CLASS_SWITCH, SwitchEntity
 from homeassistant.const import CONF_NAME
 
 from . import BalboaEntity
-from .const import DOMAIN as BALBOA_DOMAIN
+from .const import DOMAIN, SPA
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
     """Set up the spa switch devices."""
-    spa = hass.data[BALBOA_DOMAIN][entry.entry_id]
+    spa = hass.data[DOMAIN][entry.entry_id][SPA]
     device = entry.data[CONF_NAME]
     devs = []
 

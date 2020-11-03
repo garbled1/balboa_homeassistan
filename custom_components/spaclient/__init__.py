@@ -15,7 +15,8 @@ from homeassistant.helpers.dispatcher import (async_dispatcher_connect,
 from homeassistant.helpers.entity import Entity
 from pybalboa import BalboaSpaWifi
 
-from .const import BALBOA_PLATFORMS, DOMAIN
+from .const import (CONF_SYNC_TIME, DEFAULT_SYNC_TIME, DOMAIN, PLATFORMS, SPA,
+                    UNSUB)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -46,9 +47,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up Balboa Spa from a config entry."""
     host = entry.data[CONF_HOST]
 
+    unsub = entry.add_update_listener(update_listener)
+
     _LOGGER.debug("Attempting to connect to %s", host)
     spa = BalboaSpaWifi(host)
-    hass.data[DOMAIN][entry.entry_id] = spa
+    hass.data[DOMAIN][entry.entry_id] = {
+        SPA: spa,
+        UNSUB: unsub
+    }
 
     connected = await spa.connect()
     if not connected:
@@ -67,7 +73,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     # At this point we have a configured spa.
     forward_setup = hass.config_entries.async_forward_entry_setup
-    for component in BALBOA_PLATFORMS:
+    for component in PLATFORMS:
         hass.async_create_task(forward_setup(entry, component))
 
     async def _async_balboa_update_cb():
@@ -84,7 +90,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
 
     _LOGGER.debug("Disconnecting from spa")
-    spa = hass.data[DOMAIN][entry.entry_id]
+    spa = hass.data[DOMAIN][entry.entry_id][SPA]
     spa.disconnect()
 
     unload_ok = all(
@@ -92,14 +98,32 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
             *[
                 hass.config_entries.async_forward_entry_unload(
                     entry, component)
-                for component in BALBOA_PLATFORMS
+                for component in PLATFORMS
             ]
         )
     )
+
+    hass.data[DOMAIN][entry.entry_id][UNSUB]()
+
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id)
 
     return unload_ok
+
+
+async def update_listener(hass, entry):
+    """Handle options update."""
+    if (entry.options.get(CONF_SYNC_TIME, DEFAULT_SYNC_TIME)):
+        _LOGGER.debug("Setting up daily time sync.")
+        spa = hass.data[DOMAIN][entry.entry_id][SPA]
+
+        async def sync_time():
+            while entry.options.get(CONF_SYNC_TIME, DEFAULT_SYNC_TIME):
+                _LOGGER.debug("Syncing time with Home Assistant.")
+                await spa.set_time(time.localtime())
+                await asyncio.sleep(86400)
+
+        hass.loop.create_task(sync_time())
 
 
 class BalboaEntity(Entity):

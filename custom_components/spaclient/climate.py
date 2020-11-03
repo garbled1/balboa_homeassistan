@@ -1,45 +1,33 @@
 """Support for Balboa Spa Wifi adaptor."""
 import logging
-from typing import List
 import math
+from typing import List
 
 from homeassistant.components.climate import ClimateEntity
-from homeassistant.components.climate.const import (
-    CURRENT_HVAC_HEAT,
-    CURRENT_HVAC_IDLE,
-    FAN_HIGH,
-    FAN_LOW,
-    FAN_MEDIUM,
-    FAN_OFF,
-    HVAC_MODE_HEAT,
-    HVAC_MODE_AUTO,
-    SUPPORT_FAN_MODE,
-    SUPPORT_PRESET_MODE,
-    SUPPORT_TARGET_TEMPERATURE,
-)
-from homeassistant.const import (
-    ATTR_TEMPERATURE,
-    CONF_NAME,
-    PRECISION_HALVES,
-    PRECISION_WHOLE,
-    TEMP_CELSIUS,
-    TEMP_FAHRENHEIT,
-)
+from homeassistant.components.climate.const import (CURRENT_HVAC_HEAT,
+                                                    CURRENT_HVAC_IDLE,
+                                                    FAN_HIGH, FAN_LOW,
+                                                    FAN_MEDIUM, FAN_OFF,
+                                                    HVAC_MODE_AUTO,
+                                                    HVAC_MODE_HEAT,
+                                                    SUPPORT_FAN_MODE,
+                                                    SUPPORT_PRESET_MODE,
+                                                    SUPPORT_TARGET_TEMPERATURE)
+from homeassistant.const import (ATTR_TEMPERATURE, CONF_NAME, PRECISION_HALVES,
+                                 PRECISION_WHOLE, TEMP_CELSIUS,
+                                 TEMP_FAHRENHEIT)
 
 # from pybalboa import BalboaSpaWifi
 from . import BalboaEntity
-from .const import (
-    CLIMATE_SUPPORTED_FANSTATES,
-    CLIMATE_SUPPORTED_MODES,
-    DOMAIN as BALBOA_DOMAIN,
-)
+from .const import (CLIMATE_SUPPORTED_FANSTATES, CLIMATE_SUPPORTED_MODES,
+                    DOMAIN, SPA)
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
     """Set up the spa climate device."""
-    spa = hass.data[BALBOA_DOMAIN][entry.entry_id]
+    spa = hass.data[DOMAIN][entry.entry_id][SPA]
     device = entry.data[CONF_NAME]
     async_add_entities([BalboaSpaClimate(hass, spa, device, "Climate")], True)
 
