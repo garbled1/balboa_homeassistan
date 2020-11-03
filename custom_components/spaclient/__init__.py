@@ -49,7 +49,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     unsub = entry.add_update_listener(update_listener)
 
-    _LOGGER.debug("Attempting to connect to %s", host)
+    _LOGGER.info("Attempting to connect to %s", host)
     spa = BalboaSpaWifi(host)
     hass.data[DOMAIN][entry.entry_id] = {
         SPA: spa,
@@ -66,7 +66,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     await spa.send_panel_req(0, 1)
     # configured = await spa.listen_until_configured()
 
-    _LOGGER.debug("Starting listener and monitor tasks.")
+    _LOGGER.info("Starting listener and monitor tasks.")
     hass.loop.create_task(spa.listen())
     await spa.spa_configured()
     hass.loop.create_task(spa.check_connection_status())
@@ -92,7 +92,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
 
-    _LOGGER.debug("Disconnecting from spa")
+    _LOGGER.info("Disconnecting from spa")
     spa = hass.data[DOMAIN][entry.entry_id][SPA]
     spa.disconnect()
 
@@ -117,12 +117,12 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
 async def update_listener(hass, entry):
     """Handle options update."""
     if (entry.options.get(CONF_SYNC_TIME, DEFAULT_SYNC_TIME)):
-        _LOGGER.debug("Setting up daily time sync.")
+        _LOGGER.info("Setting up daily time sync.")
         spa = hass.data[DOMAIN][entry.entry_id][SPA]
 
         async def sync_time():
             while entry.options.get(CONF_SYNC_TIME, DEFAULT_SYNC_TIME):
-                _LOGGER.debug("Syncing time with Home Assistant.")
+                _LOGGER.info("Syncing time with Home Assistant.")
                 await spa.set_time(time.localtime())
                 await asyncio.sleep(86400)
 
