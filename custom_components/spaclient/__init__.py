@@ -83,6 +83,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     spa.new_data_cb = _async_balboa_update_cb
 
+    # call update_listener on startup
+    await update_listener(hass, entry)
+
     return True
 
 
