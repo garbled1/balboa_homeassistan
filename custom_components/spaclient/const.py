@@ -11,6 +11,6 @@ CONF_SYNC_TIME = "sync_time"
 DEFAULT_SYNC_TIME = False
 DOMAIN = "spaclient"
 FAN_SUPPORTED_SPEEDS = [SPEED_OFF, SPEED_LOW, SPEED_HIGH]
-PLATFORMS = ["climate", "switch", "binary_sensor", "fan"]
+PLATFORMS = ["climate", "switch", "binary_sensor", "fan", "sensor"]
 SPA = "spa"
 UNSUB = "unsub"

@@ -4,6 +4,7 @@ import logging
 import time
 
 import homeassistant.helpers.config_validation as cv
+import homeassistant.util.dt as dt_util
 import voluptuous as vol
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_NAME
@@ -123,7 +124,7 @@ async def update_listener(hass, entry):
         async def sync_time():
             while entry.options.get(CONF_SYNC_TIME, DEFAULT_SYNC_TIME):
                 _LOGGER.info("Syncing time with Home Assistant.")
-                await spa.set_time(time.localtime())
+                await spa.set_time(time.strptime(str(dt_util.now()), "%Y-%m-%d %H:%M:%S.%f%z"))
                 await asyncio.sleep(86400)
 
         hass.loop.create_task(sync_time())

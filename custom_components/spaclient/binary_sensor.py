@@ -2,7 +2,7 @@
 import logging
 
 from homeassistant.components.binary_sensor import (DEVICE_CLASS_MOVING,
-                                                    BinarySensorDevice)
+                                                    BinarySensorEntity)
 from homeassistant.const import CONF_NAME
 
 from . import BalboaEntity
@@ -24,7 +24,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     async_add_entities(devs, True)
 
 
-class BalboaSpaBinarySensor(BalboaEntity, BinarySensorDevice):
+class BalboaSpaBinarySensor(BalboaEntity, BinarySensorEntity):
     """Representation of a Balboa Spa binary sensor device."""
 
     @property
