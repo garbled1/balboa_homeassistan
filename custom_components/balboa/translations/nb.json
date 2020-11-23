@@ -1,0 +1,21 @@
+{
+  "config": {
+    "title": "Balboa Spa",
+    "step": {
+      "user": {
+        "title": "Koble til enheten",
+        "data": {
+          "host": "Vert",
+	  "name": "Name"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kunne ikke koble til, prøv igjen",
+      "unknown": "Uventet feil"
+    },
+    "abort": {
+      "already_configured": "Enheten er allerede konfigurert"
+    }
+  }
+}
