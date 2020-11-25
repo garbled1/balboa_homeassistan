@@ -1,6 +1,12 @@
 {
     "name": "Balboa Spa Client",
     "render_readme": true,
-    "domains": ["binary_sensor", "climate", "fan", "switch"],
+    "domains": [
+        "binary_sensor",
+        "climate",
+        "fan",
+        "sensor",
+        "switch"
+    ],
     "iot_class": "Local Push"
 }
