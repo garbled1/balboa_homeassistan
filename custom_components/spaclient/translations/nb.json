@@ -1,12 +1,12 @@
 {
   "config": {
-    "title": "Balboa Spa",
+    "title": "Balboa Spa Client",
     "step": {
       "user": {
         "title": "Koble til enheten",
         "data": {
           "host": "Vert",
-	  "name": "Name"
+          "name": "Navn"
         }
       }
     },
@@ -16,6 +16,15 @@
     },
     "abort": {
       "already_configured": "Enheten er allerede konfigurert"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "sync_time": "Synkroniser Home Assistant tid med Balboa Spa Client"
+        }
+      }
     }
   }
 }
