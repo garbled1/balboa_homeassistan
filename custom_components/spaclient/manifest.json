@@ -4,13 +4,14 @@
   "config_flow": true,
   "documentation": "https://www.home-assistant.io/integrations/balboa",
   "requirements": [
-    "git+https://github.com/natekspencer/pybalboa.git@master#pybalboa==0.11"
+    "pybalboa==0.12"
   ],
   "ssdp": [],
   "zeroconf": [],
   "homekit": {},
   "dependencies": [],
   "codeowners": [
+    "@garbled1",
     "@natekspencer"
   ]
 }
