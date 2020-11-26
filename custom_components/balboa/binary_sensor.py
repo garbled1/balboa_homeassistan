@@ -24,20 +24,23 @@ async def async_setup_entry(hass, entry, async_add_entities):
     name = entry.data[CONF_NAME]
     devs = []
 
-    devs.append(BalboaSpaBinarySensor(hass, spa, f"{name}-filter1", "filter1"))
-    devs.append(BalboaSpaBinarySensor(hass, spa, f"{name}-filter2", "filter2"))
+    devs.append(BalboaSpaBinarySensor(hass, spa, f"{name}-filter1",
+                                      entry, "filter1"))
+    devs.append(BalboaSpaBinarySensor(hass, spa, f"{name}-filter2",
+                                      entry, "filter2"))
 
     if spa.have_circ_pump():
-        devs.append(BalboaSpaBinarySensor(hass, spa, f"{name}-circ_pump", "circ_pump"))
+        devs.append(BalboaSpaBinarySensor(hass, spa, f"{name}-circ_pump",
+                                          entry, "circ_pump"))
     async_add_entities(devs, True)
 
 
 class BalboaSpaBinarySensor(BalboaEntity, BinarySensorEntity):
     """Representation of a Balboa Spa binary sensor device."""
 
-    def __init__(self, hass, client, name, bsensor_key):
+    def __init__(self, hass, client, name, entry, bsensor_key):
         """Initialize the binary sensor."""
-        super().__init__(hass, client, name)
+        super().__init__(hass, client, name, entry)
         self.bsensor_key = bsensor_key
 
     @property
@@ -67,4 +70,3 @@ class BalboaSpaBinarySensor(BalboaEntity, BinarySensorEntity):
         if "circ_pump" in self.bsensor_key:
             return "mdi:water-pump" if self.is_on else "mdi:water-pump-off"
         return "mdi:sync" if self.is_on else "mdi:sync-off"
-

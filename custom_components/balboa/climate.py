@@ -46,7 +46,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     """Set up the spa climate device."""
     spa = hass.data[BALBOA_DOMAIN][entry.entry_id]
     name = entry.data[CONF_NAME]
-    async_add_entities([BalboaSpaClimate(hass, spa, name)], True)
+    async_add_entities([BalboaSpaClimate(hass, spa, name, entry)], True)
 
 
 class BalboaSpaClimate(BalboaEntity, ClimateEntity):

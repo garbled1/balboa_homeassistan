@@ -111,11 +111,12 @@ class BalboaEntity(Entity):
     accessors.
     """
 
-    def __init__(self, hass, client, name):
+    def __init__(self, hass, client, name, entry):
         """Initialize the spa."""
         self.hass = hass
         self._client = client
         self._name = name
+        self._entry = entry
 
     async def async_added_to_hass(self) -> None:
         """Set up a listener for the entity."""
@@ -154,7 +155,7 @@ class BalboaEntity(Entity):
         """Return device information for this sensor."""
         return {
             "identifiers": {(DOMAIN, self._client.get_macaddr())},
-            "name": self._name,
+            "name": self._entry.data[CONF_NAME],
             "manufacturer": 'Balboa Water Group',
             "model": self._client.get_model_name(),
             "sw_version": self._client.get_ssid()

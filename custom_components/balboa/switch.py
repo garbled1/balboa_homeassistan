@@ -23,16 +23,16 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
     lights = spa.get_light_list()
     if lights[0]:
-        devs.append(BalboaSpaSwitch(hass, spa, f"{name}-light1", "light1"))
+        devs.append(BalboaSpaSwitch(hass, spa, f"{name}-light1", entry, "light1"))
     if lights[1]:
-        devs.append(BalboaSpaSwitch(hass, spa, f"{name}-light2", "light2"))
+        devs.append(BalboaSpaSwitch(hass, spa, f"{name}-light2", entry, "light2"))
     auxs = spa.get_aux_list()
     if auxs[0]:
-        devs.append(BalboaSpaSwitch(hass, spa, f"{name}-aux1", "aux1"))
+        devs.append(BalboaSpaSwitch(hass, spa, f"{name}-aux1", entry, "aux1"))
     if auxs[1]:
-        devs.append(BalboaSpaSwitch(hass, spa, f"{name}-aux2", "aux2"))
+        devs.append(BalboaSpaSwitch(hass, spa, f"{name}-aux2", entry, "aux2"))
     if spa.have_mister():
-        devs.append(BalboaSpaSwitch(hass, spa, f"{name}-mister", "mister"))
+        devs.append(BalboaSpaSwitch(hass, spa, f"{name}-mister", entry, "mister"))
 
     async_add_entities(devs, True)
 
@@ -40,9 +40,9 @@ async def async_setup_entry(hass, entry, async_add_entities):
 class BalboaSpaSwitch(BalboaEntity, SwitchEntity):
     """Representation of a Balboa Spa switch device."""
 
-    def __init__(self, hass, client, name, switch_key):
+    def __init__(self, hass, client, name, entry, switch_key):
         """Initialize the switch."""
-        super().__init__(hass, client, name)
+        super().__init__(hass, client, name, entry)
         self.switch_key = switch_key
         self.getdata = {
             "light1": self._client.get_light,

@@ -30,7 +30,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
     for idx in enumerate(pumps):
         if pumps[idx[0]]:
-            devs.append(BalboaSpaPump(hass, spa, f"{name}-pump{idx[0] + 1}", idx[0]))
+            devs.append(BalboaSpaPump(hass, spa, f"{name}-pump{idx[0] + 1}",
+                                      entry, idx[0]))
 
     async_add_entities(devs, True)
 
@@ -38,9 +39,9 @@ async def async_setup_entry(hass, entry, async_add_entities):
 class BalboaSpaPump(BalboaEntity, FanEntity):
     """Representation of a Balboa Spa pump device."""
 
-    def __init__(self, hass, client, name, pump):
+    def __init__(self, hass, client, name, entry, pump):
         """Initialize the pump."""
-        super().__init__(hass, client, name)
+        super().__init__(hass, client, name, entry)
         self.pump = pump
         _LOGGER.debug("Creating pump #%d", pump)
 
