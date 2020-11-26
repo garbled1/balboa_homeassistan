@@ -156,6 +156,6 @@ class BalboaEntity(Entity):
             "identifiers": {(DOMAIN, self._client.get_macaddr())},
             "name": self._name,
             "manufacturer": 'Balboa Water Group',
-            "model": self._client.get_model_name,
+            "model": self._client.get_model_name(),
             "sw_version": self._client.get_ssid()
         }
