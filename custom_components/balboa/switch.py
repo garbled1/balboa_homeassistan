@@ -1,7 +1,7 @@
 """Support for Balboa Spa switches."""
 import logging
 
-from homeassistant.components.switch import DEVICE_CLASS_SWITCH, SwitchDevice
+from homeassistant.components.switch import DEVICE_CLASS_SWITCH, SwitchEntity
 from homeassistant.const import CONF_NAME
 
 from . import BalboaEntity
@@ -37,7 +37,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     async_add_entities(devs, True)
 
 
-class BalboaSpaSwitch(BalboaEntity, SwitchDevice):
+class BalboaSpaSwitch(BalboaEntity, SwitchEntity):
     """Representation of a Balboa Spa switch device."""
 
     def __init__(self, hass, client, name, switch_key):

@@ -2,7 +2,7 @@
 import logging
 from typing import List
 
-from homeassistant.components.climate import ClimateDevice
+from homeassistant.components.climate import ClimateEntity
 from homeassistant.components.climate.const import (
     CURRENT_HVAC_HEAT,
     CURRENT_HVAC_IDLE,
@@ -49,7 +49,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     async_add_entities([BalboaSpaClimate(hass, spa, name)], True)
 
 
-class BalboaSpaClimate(BalboaEntity, ClimateDevice):
+class BalboaSpaClimate(BalboaEntity, ClimateEntity):
     """Representation of a Balboa Spa Climate device."""
 
     @property

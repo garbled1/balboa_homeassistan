@@ -2,6 +2,7 @@
 import asyncio
 import logging
 import time
+from typing import Any, Dict
 
 from pybalboa import BalboaSpaWifi
 import voluptuous as vol
@@ -147,3 +148,14 @@ class BalboaEntity(Entity):
     def available(self) -> bool:
         """Return whether the entity is available or not."""
         return self._client.connected
+
+    @property
+    def device_info(self) -> Dict[str, Any]:
+        """Return device information for this sensor."""
+        return {
+            "identifiers": {(DOMAIN, self._client.get_macaddr())},
+            "name": self._name,
+            "manufacturer": 'Balboa Water Group',
+            "model": self._client.get_model_name,
+            "sw_version": self._client.get_ssid()
+        }

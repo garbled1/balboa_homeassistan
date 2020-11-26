@@ -3,7 +3,7 @@ import logging
 
 from homeassistant.components.binary_sensor import (
     DEVICE_CLASS_MOVING,
-    BinarySensorDevice,
+    BinarySensorEntity,
 )
 from homeassistant.const import CONF_NAME
 
@@ -32,7 +32,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     async_add_entities(devs, True)
 
 
-class BalboaSpaBinarySensor(BalboaEntity, BinarySensorDevice):
+class BalboaSpaBinarySensor(BalboaEntity, BinarySensorEntity):
     """Representation of a Balboa Spa binary sensor device."""
 
     def __init__(self, hass, client, name, bsensor_key):
@@ -65,5 +65,6 @@ class BalboaSpaBinarySensor(BalboaEntity, BinarySensorDevice):
     def icon(self):
         """Return the icon to use in the frontend, if any."""
         if "circ_pump" in self.bsensor_key:
-            return "mdi:water-pump"
-        return "mdi:autorenew"
+            return "mdi:water-pump" if self.is_on else "mdi:water-pump-off"
+        return "mdi:sync" if self.is_on else "mdi:sync-off"
+
