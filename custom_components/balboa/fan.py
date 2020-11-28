@@ -3,10 +3,9 @@ import logging
 
 from homeassistant.components.fan import (SPEED_LOW, SPEED_OFF,
                                           SUPPORT_SET_SPEED, FanEntity)
-from homeassistant.const import CONF_NAME
 
 from . import BalboaEntity
-from .const import DOMAIN, FAN_SUPPORTED_SPEEDS, SPA
+from .const import DOMAIN, FAN_SUPPORTED_SPEEDS, PUMP, SPA
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -14,12 +13,11 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, entry, async_add_entities):
     """Set up the spa's pumps as FAN entities."""
     spa = hass.data[DOMAIN][entry.entry_id][SPA]
-    device = entry.data[CONF_NAME]
     devs = []
 
-    for num, value in enumerate(spa.pump_array, 1):
+    for key, value in enumerate(spa.pump_array, 1):
         if value:
-            devs.append(BalboaSpaPump(hass, spa, device, num, value))
+            devs.append(BalboaSpaPump(hass, entry, key, value))
 
     async_add_entities(devs, True)
 
@@ -27,9 +25,9 @@ async def async_setup_entry(hass, entry, async_add_entities):
 class BalboaSpaPump(BalboaEntity, FanEntity):
     """Representation of a Balboa Spa pump device."""
 
-    def __init__(self, hass, client, device, num, states):
-        """Initialize the switch."""
-        super().__init__(hass, client, device, 'Pump', num)
+    def __init__(self, hass, entry, key, states):
+        """Initialize the pump."""
+        super().__init__(hass, entry, PUMP, key)
         self._speed_list = FAN_SUPPORTED_SPEEDS if states > 1 else None
         self._supported_features = SUPPORT_SET_SPEED if states > 1 else 0
 

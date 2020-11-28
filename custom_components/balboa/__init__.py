@@ -2,6 +2,7 @@
 import asyncio
 import logging
 import time
+from typing import Any, Dict
 
 import homeassistant.helpers.config_validation as cv
 import homeassistant.util.dt as dt_util
@@ -139,32 +140,30 @@ class BalboaEntity(Entity):
     accessors.
     """
 
-    def __init__(self, hass, client, device, entity, num=None):
-        """Initialize the spa."""
+    def __init__(self, hass, entry, type, key=None):
+        """Initialize the spa entity."""
         self.hass = hass
-        self._client = client
-        self._device = device
-        self._entity = entity
-        self._num = num
-        _LOGGER.debug(f'Initializing {device}: {entity}{num or ""}')
+        self._client = hass.data[DOMAIN][entry.entry_id][SPA]
+        self._device_name = entry.data[CONF_NAME]
+        self._type = type
+        self._num = key
 
     @property
-    def device_info(self):
+    def device_info(self) -> Dict[str, Any]:
+        """Return the device information for this entity."""
         return {
-            "name": self._device,
+            "name": self._device_name,
             "connections": {(CONNECTION_NETWORK_MAC, self._client.get_macaddr())},
-            "identifiers": {
-                (DOMAIN, self._client.get_macaddr().replace(":", "")[-6:])
-            },
-            "manufacturer": "Balboa",
+            "identifiers": {(DOMAIN, self._client.get_macaddr())},
+            "manufacturer": 'Balboa Water Group',
             "model": self._client.get_model_name(),
-            "sw_version": self._client.get_ssid(),
+            "sw_version": self._client.get_ssid()
         }
 
     @property
     def name(self):
         """Return the name of the entity."""
-        return f'{self._device}: {self._entity}{self._num or ""}'
+        return f'{self._device_name}: {self._type}{self._num or ""}'
 
     async def async_added_to_hass(self) -> None:
         """Set up a listener for the entity."""
@@ -184,7 +183,7 @@ class BalboaEntity(Entity):
     @property
     def unique_id(self):
         """Set unique_id for this entity."""
-        return f'{self._device}-{self._entity}{self._num or ""}-{self._client.get_macaddr().replace(":","")[-6:]}'
+        return f'{self._device_name}-{self._type}{self._num or ""}-{self._client.get_macaddr().replace(":","")[-6:]}'
 
     @property
     def assumed_state(self) -> bool:

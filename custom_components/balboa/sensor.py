@@ -1,22 +1,14 @@
 """Support for Balboa Spa sensors."""
 import logging
 
-from homeassistant.const import CONF_NAME
-
 from . import BalboaEntity
-from .const import DOMAIN, SPA
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
     """Set up the spa's sensors."""
-    spa = hass.data[DOMAIN][entry.entry_id][SPA]
-    device = entry.data[CONF_NAME]
-    devs = []
-
-    devs.append(BalboaSpaSensor(hass, spa, device, "Time"))
-    async_add_entities(devs, True)
+    async_add_entities([BalboaSpaSensor(hass, entry, "Time")], True)
 
 
 class BalboaSpaSensor(BalboaEntity):

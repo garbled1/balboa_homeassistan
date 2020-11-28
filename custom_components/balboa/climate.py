@@ -13,23 +13,20 @@ from homeassistant.components.climate.const import (CURRENT_HVAC_HEAT,
                                                     SUPPORT_FAN_MODE,
                                                     SUPPORT_PRESET_MODE,
                                                     SUPPORT_TARGET_TEMPERATURE)
-from homeassistant.const import (ATTR_TEMPERATURE, CONF_NAME, PRECISION_HALVES,
+from homeassistant.const import (ATTR_TEMPERATURE, PRECISION_HALVES,
                                  PRECISION_WHOLE, TEMP_CELSIUS,
                                  TEMP_FAHRENHEIT)
 
-# from pybalboa import BalboaSpaWifi
 from . import BalboaEntity
-from .const import (CLIMATE_SUPPORTED_FANSTATES, CLIMATE_SUPPORTED_MODES,
-                    DOMAIN, SPA)
+from .const import (CLIMATE, CLIMATE_SUPPORTED_FANSTATES,
+                    CLIMATE_SUPPORTED_MODES)
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
     """Set up the spa climate device."""
-    spa = hass.data[DOMAIN][entry.entry_id][SPA]
-    device = entry.data[CONF_NAME]
-    async_add_entities([BalboaSpaClimate(hass, spa, device, "Climate")], True)
+    async_add_entities([BalboaSpaClimate(hass, entry, CLIMATE)], True)
 
 
 class BalboaSpaClimate(BalboaEntity, ClimateEntity):
@@ -170,7 +167,7 @@ class BalboaSpaClimate(BalboaEntity, ClimateEntity):
     async def async_set_hvac_mode(self, hvac_mode):
         """Set new target hvac mode.
 
-        AUTO = REST
+        AUTO = REST/READY_IN_REST
         HEAT = READY
         """
         if hvac_mode == HVAC_MODE_HEAT:

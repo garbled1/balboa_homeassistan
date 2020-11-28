@@ -14,3 +14,12 @@ FAN_SUPPORTED_SPEEDS = [SPEED_OFF, SPEED_LOW, SPEED_HIGH]
 PLATFORMS = ["climate", "switch", "binary_sensor", "fan", "sensor"]
 SPA = "spa"
 UNSUB = "unsub"
+
+AUX = "Aux"
+CIRC_PUMP = "Circ Pump"
+CLIMATE = "Climate"
+FILTER = "Filter"
+LIGHT = "Light"
+MISTER = "Mister"
+PUMP = "Pump"
+TEMP_RANGE = "Temp Range"
