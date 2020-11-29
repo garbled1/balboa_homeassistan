@@ -7,6 +7,8 @@ from . import BalboaEntity
 from .const import AUX, DOMAIN, LIGHT, MISTER, SPA, TEMP_RANGE
 
 _LOGGER = logging.getLogger(__name__)
+GET_FUNCTION = "get"
+CHANGE_FUNCTION = "change"
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
@@ -33,16 +35,20 @@ class BalboaSpaSwitch(BalboaEntity, SwitchEntity):
     """Representation of a Balboa Spa switch device."""
 
     @property
+    def type_functions(self):
+        """Get the appropriate function for the type of switch"""
+        return {
+            AUX: {GET_FUNCTION: self._client.get_aux, CHANGE_FUNCTION: self._client.change_aux},
+            LIGHT: {GET_FUNCTION: self._client.get_light, CHANGE_FUNCTION: self._client.change_light},
+            MISTER: {GET_FUNCTION: self._client.get_mister, CHANGE_FUNCTION: self._client.change_mister},
+            TEMP_RANGE: {GET_FUNCTION: self._client.get_temprange, CHANGE_FUNCTION: self._client.change_temprange},
+        }
+
+    @property
     def is_on(self) -> bool:
         """Return True if the switch is on."""
-        if self._type == AUX:
-            return self._client.get_aux(self._num-1)
-        elif self._type == LIGHT:
-            return self._client.get_light(self._num-1)
-        elif self._type == MISTER:
-            return self._client.get_mister()
-        elif self._type == TEMP_RANGE:
-            return self._client.get_temprange()
+        key = self._num-1 if self._num else None
+        return self.type_functions[self._type][GET_FUNCTION](key)
 
     @property
     def device_class(self):
@@ -63,22 +69,14 @@ class BalboaSpaSwitch(BalboaEntity, SwitchEntity):
 
     async def async_turn_off(self, **kwargs):
         """Turn off the switch."""
-        if self._type == AUX:
-            return await self._client.change_aux(self._num-1, self._client.OFF)
-        elif self._type == LIGHT:
-            return await self._client.change_light(self._num-1, self._client.OFF)
-        elif self._type == MISTER:
-            return await self._client.change_mister(self._client.OFF)
-        elif self._type == TEMP_RANGE:
-            return await self._client.change_temprange(self._client.TEMPRANGE_LOW)
+        new_state = self._client.TEMPRANGE_LOW if self._type == TEMP_RANGE else self._client.OFF
+        return await self.change_switch(new_state)
 
     async def async_turn_on(self, **kwargs):
         """Turn on the switch."""
-        if self._type == AUX:
-            return await self._client.change_aux(self._num-1, self._client.ON)
-        elif self._type == LIGHT:
-            return await self._client.change_light(self._num-1, self._client.ON)
-        elif self._type == MISTER:
-            return self._client.change_mister(self._client.ON)
-        elif self._type == TEMP_RANGE:
-            return await self._client.change_temprange(self._client.TEMPRANGE_HIGH)
+        new_state = self._client.TEMPRANGE_HIGH if self._type == TEMP_RANGE else self._client.ON
+        return await self.change_switch(new_state)
+
+    async def change_switch(self, new_state=None):
+        key = self._num-1 if self._num else None
+        return await self.type_functions[self._type][CHANGE_FUNCTION](*[v for v in [key, new_state] if v is not None])
