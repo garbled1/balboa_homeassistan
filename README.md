@@ -20,8 +20,7 @@ have a 1-speed, only use LOW and OFF.
 
 ## Related Projects
 
-* https://github.com/garbled1/balboa_homeassistan - Original repo forked for my code base
+* https://github.com/garbled1/pybalboa - Python library for local spa control
 * https://github.com/plmilord/Hass.io-custom-component-spaclient - Another HASS custom component (and source of "spaclient" logos)
 * https://github.com/ccutrer/balboa_worldwide_app - Fountain of knowledge for most of the messages sent from the spa wifi module
-* https://github.com/natekspencer/pybalboa - Python library expanded based on garbled's previous work (https://github.com/garbled1/pybalboa)
-* https://github.com/natekspencer/BwaSpaManager - My SmartThings cloud-based solution
+* https://github.com/natekspencer/BwaSpaManager - A SmartThings cloud-based solution

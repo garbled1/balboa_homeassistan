@@ -3,7 +3,7 @@
     "title": "Balboa Spa Client",
     "step": {
       "user": {
-        "title": "Connect to the device",
+        "title": "Connect to the Balboa Wi-Fi device",
         "data": {
           "host": "Host",
           "name": "Name"

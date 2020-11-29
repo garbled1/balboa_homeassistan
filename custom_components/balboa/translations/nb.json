@@ -3,7 +3,7 @@
     "title": "Balboa Spa Client",
     "step": {
       "user": {
-        "title": "Koble til enheten",
+        "title": "Koble til Balboa Wi-Fi enheten",
         "data": {
           "host": "Vert",
           "name": "Navn"

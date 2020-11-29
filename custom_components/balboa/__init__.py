@@ -32,7 +32,7 @@ CONFIG_SCHEMA = vol.Schema(
 
 
 async def async_setup(hass: HomeAssistant, config: dict):
-    """Configure the Balboa Spa component using flow only."""
+    """Configure the Balboa Spa Client component using flow only."""
     hass.data[DOMAIN] = {}
 
     if DOMAIN in config:
@@ -149,18 +149,6 @@ class BalboaEntity(Entity):
         self._num = num
 
     @property
-    def device_info(self) -> Dict[str, Any]:
-        """Return the device information for this entity."""
-        return {
-            "name": self._device_name,
-            "connections": {(CONNECTION_NETWORK_MAC, self._client.get_macaddr())},
-            "identifiers": {(DOMAIN, self._client.get_macaddr())},
-            "manufacturer": 'Balboa Water Group',
-            "model": self._client.get_model_name(),
-            "sw_version": self._client.get_ssid()
-        }
-
-    @property
     def name(self):
         """Return the name of the entity."""
         return f'{self._device_name}: {self._type}{self._num or ""}'
@@ -196,3 +184,15 @@ class BalboaEntity(Entity):
     def available(self) -> bool:
         """Return whether the entity is available or not."""
         return self._client.connected
+
+    @property
+    def device_info(self) -> Dict[str, Any]:
+        """Return the device information for this entity."""
+        return {
+            "identifiers": {(DOMAIN, self._client.get_macaddr())},
+            "name": self._device_name,
+            "manufacturer": 'Balboa Water Group',
+            "model": self._client.get_model_name(),
+            "sw_version": self._client.get_ssid(),
+            "connections": {(CONNECTION_NETWORK_MAC, self._client.get_macaddr())}
+        }

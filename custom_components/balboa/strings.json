@@ -3,7 +3,7 @@
     "title": "Balboa Spa Client",
     "step": {
       "user": {
-        "title": "Connect to the Balboa WiFi device",
+        "title": "Connect to the Balboa Wi-Fi device",
         "data": {
           "host": "Host",
           "name": "Name"
@@ -22,7 +22,7 @@
     "step": {
       "init": {
         "data": {
-          "sync_time": "Sync Home Assistant time with the Balboa Spa Client"
+          "sync_time": "Keep your Balboa Spa Client's time synchronized with Home Assistant"
         }
       }
     }
