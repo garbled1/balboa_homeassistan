@@ -96,7 +96,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     _LOGGER.info("Disconnecting from spa")
     spa = hass.data[DOMAIN][entry.entry_id][SPA]
-    spa.disconnect()
+    await spa.disconnect()
 
     unload_ok = all(
         await asyncio.gather(

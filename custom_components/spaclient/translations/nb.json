@@ -22,7 +22,7 @@
     "step": {
       "init": {
         "data": {
-          "sync_time": "Synkroniser Home Assistant tid med Balboa Spa Client"
+          "sync_time": "Hold din Balboa Spa Client tid synkronisert med Home Assistant"
         }
       }
     }
