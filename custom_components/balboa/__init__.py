@@ -140,13 +140,13 @@ class BalboaEntity(Entity):
     accessors.
     """
 
-    def __init__(self, hass, entry, type, key=None):
+    def __init__(self, hass, entry, type, num=None):
         """Initialize the spa entity."""
         self.hass = hass
         self._client = hass.data[DOMAIN][entry.entry_id][SPA]
         self._device_name = entry.data[CONF_NAME]
         self._type = type
-        self._num = key
+        self._num = num
 
     @property
     def device_info(self) -> Dict[str, Any]:
