@@ -4,23 +4,30 @@ import math
 from typing import List
 
 from homeassistant.components.climate import ClimateEntity
-from homeassistant.components.climate.const import (CURRENT_HVAC_HEAT,
-                                                    CURRENT_HVAC_IDLE,
-                                                    FAN_HIGH, FAN_LOW,
-                                                    FAN_MEDIUM, FAN_OFF,
-                                                    HVAC_MODE_AUTO,
-                                                    HVAC_MODE_HEAT,
-                                                    HVAC_MODE_OFF,
-                                                    SUPPORT_FAN_MODE,
-                                                    SUPPORT_PRESET_MODE,
-                                                    SUPPORT_TARGET_TEMPERATURE)
-from homeassistant.const import (ATTR_TEMPERATURE, PRECISION_HALVES,
-                                 PRECISION_WHOLE, TEMP_CELSIUS,
-                                 TEMP_FAHRENHEIT)
+from homeassistant.components.climate.const import (
+    CURRENT_HVAC_HEAT,
+    CURRENT_HVAC_IDLE,
+    FAN_HIGH,
+    FAN_LOW,
+    FAN_MEDIUM,
+    FAN_OFF,
+    HVAC_MODE_AUTO,
+    HVAC_MODE_HEAT,
+    HVAC_MODE_OFF,
+    SUPPORT_FAN_MODE,
+    SUPPORT_PRESET_MODE,
+    SUPPORT_TARGET_TEMPERATURE,
+)
+from homeassistant.const import (
+    ATTR_TEMPERATURE,
+    PRECISION_HALVES,
+    PRECISION_WHOLE,
+    TEMP_CELSIUS,
+    TEMP_FAHRENHEIT,
+)
 
 from . import BalboaEntity
-from .const import (CLIMATE, CLIMATE_SUPPORTED_FANSTATES,
-                    CLIMATE_SUPPORTED_MODES)
+from .const import CLIMATE, CLIMATE_SUPPORTED_FANSTATES, CLIMATE_SUPPORTED_MODES
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -136,11 +143,14 @@ class BalboaSpaClimate(BalboaEntity, ClimateEntity):
     @property
     def preset_modes(self):
         """Return the valid preset modes."""
-        modes = [mode for mode in self._client.get_heatmode_stringlist()
-                 # only return "Ready in Rest" as an option if the spa is currently in that
-                 # mode since it is a status rather than an available mode to be selected
-                 if self._client.get_heatmode() == self._client.HEATMODE_RNR
-                 or mode != self._client.get_heatmode_stringlist()[self._client.HEATMODE_RNR]]
+        modes = [
+            mode
+            for mode in self._client.get_heatmode_stringlist()
+            # only return "Ready in Rest" as an option if the spa is currently in that
+            # mode since it is a status rather than an available mode to be selected
+            if self._client.get_heatmode() == self._client.HEATMODE_RNR
+            or mode != self._client.get_heatmode_stringlist()[self._client.HEATMODE_RNR]
+        ]
         return modes
 
     @property
@@ -156,7 +166,7 @@ class BalboaSpaClimate(BalboaEntity, ClimateEntity):
             if spa_unit == self._client.TSCALE_F:
                 temperature = math.floor(temperature + 0.5)
             else:
-                temperature = .5 * round(temperature / .5)
+                temperature = 0.5 * round(temperature / 0.5)
         await self._client.send_temp_change(temperature)
 
     async def async_set_preset_mode(self, preset_mode) -> None:

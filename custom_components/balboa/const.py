@@ -1,8 +1,12 @@
 """Constants for the Balboa Spa Client integration."""
-from homeassistant.components.climate.const import (FAN_HIGH, FAN_LOW,
-                                                    FAN_MEDIUM, FAN_OFF,
-                                                    HVAC_MODE_HEAT,
-                                                    HVAC_MODE_OFF)
+from homeassistant.components.climate.const import (
+    FAN_HIGH,
+    FAN_LOW,
+    FAN_MEDIUM,
+    FAN_OFF,
+    HVAC_MODE_HEAT,
+    HVAC_MODE_OFF,
+)
 from homeassistant.components.fan import SPEED_HIGH, SPEED_LOW, SPEED_OFF
 
 CLIMATE_SUPPORTED_FANSTATES = [FAN_OFF, FAN_LOW, FAN_MEDIUM, FAN_HIGH]

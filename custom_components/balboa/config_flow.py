@@ -94,9 +94,7 @@ class BalboaSpaClientOptionsFlowHandler(config_entries.OptionsFlow):
                 {
                     vol.Optional(
                         CONF_SYNC_TIME,
-                        default=self.config_entry.options.get(
-                            CONF_SYNC_TIME, False
-                        ),
+                        default=self.config_entry.options.get(CONF_SYNC_TIME, False),
                     ): bool,
                 }
             ),

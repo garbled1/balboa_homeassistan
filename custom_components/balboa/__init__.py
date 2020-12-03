@@ -12,13 +12,14 @@ from homeassistant.const import CONF_HOST, CONF_NAME
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
-from homeassistant.helpers.dispatcher import (async_dispatcher_connect,
-                                              async_dispatcher_send)
+from homeassistant.helpers.dispatcher import (
+    async_dispatcher_connect,
+    async_dispatcher_send,
+)
 from homeassistant.helpers.entity import Entity
 from pybalboa import BalboaSpaWifi
 
-from .const import (CONF_SYNC_TIME, DEFAULT_SYNC_TIME, DOMAIN, PLATFORMS, SPA,
-                    UNSUB)
+from .const import CONF_SYNC_TIME, DEFAULT_SYNC_TIME, DOMAIN, PLATFORMS, SPA, UNSUB
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -53,10 +54,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     _LOGGER.info("Attempting to connect to %s", host)
     spa = BalboaSpaWifi(host)
-    hass.data[DOMAIN][entry.entry_id] = {
-        SPA: spa,
-        UNSUB: unsub
-    }
+    hass.data[DOMAIN][entry.entry_id] = {SPA: spa, UNSUB: unsub}
 
     connected = await spa.connect()
     if not connected:
@@ -101,8 +99,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     unload_ok = all(
         await asyncio.gather(
             *[
-                hass.config_entries.async_forward_entry_unload(
-                    entry, component)
+                hass.config_entries.async_forward_entry_unload(entry, component)
                 for component in PLATFORMS
             ]
         )
@@ -118,14 +115,16 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
 
 async def update_listener(hass, entry):
     """Handle options update."""
-    if (entry.options.get(CONF_SYNC_TIME, DEFAULT_SYNC_TIME)):
+    if entry.options.get(CONF_SYNC_TIME, DEFAULT_SYNC_TIME):
         _LOGGER.info("Setting up daily time sync.")
         spa = hass.data[DOMAIN][entry.entry_id][SPA]
 
         async def sync_time():
             while entry.options.get(CONF_SYNC_TIME, DEFAULT_SYNC_TIME):
                 _LOGGER.info("Syncing time with Home Assistant.")
-                await spa.set_time(time.strptime(str(dt_util.now()), "%Y-%m-%d %H:%M:%S.%f%z"))
+                await spa.set_time(
+                    time.strptime(str(dt_util.now()), "%Y-%m-%d %H:%M:%S.%f%z")
+                )
                 await asyncio.sleep(86400)
 
         hass.loop.create_task(sync_time())
@@ -160,7 +159,7 @@ class BalboaEntity(Entity):
     @callback
     def _update_callback(self) -> None:
         """Call from dispatcher when state changes."""
-        _LOGGER.debug(f'Updating {self.name} state with new data.')
+        _LOGGER.debug(f"Updating {self.name} state with new data.")
         self.async_schedule_update_ha_state(force_refresh=True)
 
     @property
@@ -191,8 +190,8 @@ class BalboaEntity(Entity):
         return {
             "identifiers": {(DOMAIN, self._client.get_macaddr())},
             "name": self._device_name,
-            "manufacturer": 'Balboa Water Group',
+            "manufacturer": "Balboa Water Group",
             "model": self._client.get_model_name(),
             "sw_version": self._client.get_ssid(),
-            "connections": {(CONNECTION_NETWORK_MAC, self._client.get_macaddr())}
+            "connections": {(CONNECTION_NETWORK_MAC, self._client.get_macaddr())},
         }

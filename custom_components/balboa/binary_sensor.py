@@ -1,8 +1,10 @@
 """Support for Balboa Spa binary sensors."""
 import logging
 
-from homeassistant.components.binary_sensor import (DEVICE_CLASS_MOVING,
-                                                    BinarySensorEntity)
+from homeassistant.components.binary_sensor import (
+    DEVICE_CLASS_MOVING,
+    BinarySensorEntity,
+)
 
 from . import BalboaEntity
 from .const import CIRC_PUMP, DOMAIN, FILTER, SPA

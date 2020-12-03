@@ -17,9 +17,9 @@ class BalboaSpaSensor(BalboaEntity):
     @property
     def state(self):
         """Return the value of the sensor."""
-        return f'{self._client.time_hour:02d}:{self._client.time_minute:02d}'
+        return f"{self._client.time_hour:02d}:{self._client.time_minute:02d}"
 
     @property
     def icon(self):
         """Return the icon to use in the frontend, if any."""
-        return 'mdi:clock'
+        return "mdi:clock"
