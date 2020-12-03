@@ -103,7 +103,12 @@ class BalboaSpaClimate(BalboaEntity, ClimateEntity):
 
     @property
     def precision(self) -> float:
-        """Return the precision of the system."""
+        """Return the precision of the system.
+        
+        Balboa spas return data in C or F depending on how the display is set,	
+        because ultimately, we are just reading the display.	
+        In C, we have half-degree accuracy, in F, whole degree.
+        """
         if self.hass.config.units.temperature_unit == TEMP_CELSIUS:
             return PRECISION_HALVES
         return PRECISION_WHOLE
