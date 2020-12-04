@@ -1,12 +1,9 @@
 """Support for Balboa Spa switches."""
-import logging
-
 from homeassistant.components.switch import DEVICE_CLASS_SWITCH, SwitchEntity
 
 from . import BalboaEntity
-from .const import AUX, DOMAIN, LIGHT, MISTER, SPA, TEMP_RANGE
+from .const import _LOGGER, AUX, DOMAIN, LIGHT, MISTER, SPA, TEMP_RANGE
 
-_LOGGER = logging.getLogger(__name__)
 CHANGE_FUNCTION = "change"
 GET_FUNCTION = "get"
 

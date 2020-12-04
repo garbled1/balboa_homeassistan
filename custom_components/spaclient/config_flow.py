@@ -1,5 +1,4 @@
 """Config flow for Balboa Spa Client integration."""
-import logging
 from typing import Any, Dict, Optional
 
 import voluptuous as vol
@@ -8,9 +7,7 @@ from homeassistant.const import CONF_HOST, CONF_NAME
 from homeassistant.core import callback
 from pybalboa import BalboaSpaWifi
 
-from .const import CONF_SYNC_TIME, DOMAIN  # pylint:disable=unused-import
-
-_LOGGER = logging.getLogger(__name__)
+from .const import _LOGGER, CONF_SYNC_TIME, DOMAIN
 
 DATA_SCHEMA = vol.Schema(
     {vol.Required(CONF_HOST): str, vol.Required(CONF_NAME, default="Spa"): str}

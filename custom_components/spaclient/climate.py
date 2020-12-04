@@ -1,5 +1,4 @@
 """Support for Balboa Spa Wifi adaptor."""
-import logging
 import math
 from typing import List
 
@@ -27,9 +26,12 @@ from homeassistant.const import (
 )
 
 from . import BalboaEntity
-from .const import CLIMATE, CLIMATE_SUPPORTED_FANSTATES, CLIMATE_SUPPORTED_MODES
-
-_LOGGER = logging.getLogger(__name__)
+from .const import (
+    _LOGGER,
+    CLIMATE,
+    CLIMATE_SUPPORTED_FANSTATES,
+    CLIMATE_SUPPORTED_MODES,
+)
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
@@ -104,9 +106,9 @@ class BalboaSpaClimate(BalboaEntity, ClimateEntity):
     @property
     def precision(self) -> float:
         """Return the precision of the system.
-        
-        Balboa spas return data in C or F depending on how the display is set,	
-        because ultimately, we are just reading the display.	
+
+        Balboa spas return data in C or F depending on how the display is set,
+        because ultimately, we are just reading the display.
         In C, we have half-degree accuracy, in F, whole degree.
         """
         if self.hass.config.units.temperature_unit == TEMP_CELSIUS:
@@ -162,6 +164,13 @@ class BalboaSpaClimate(BalboaEntity, ClimateEntity):
     def preset_mode(self):
         """Return current preset mode."""
         return self._client.get_heatmode(True)
+
+    @property
+    def device_state_attributes(self):
+        """Return device specific state attributes."""
+        return {
+            "time": f"{self._client.time_hour:02d}:{self._client.time_minute:02d}",
+        }
 
     async def async_set_temperature(self, **kwargs):
         """Set a new target temperature."""

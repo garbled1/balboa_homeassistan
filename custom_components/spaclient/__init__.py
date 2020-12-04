@@ -1,6 +1,5 @@
 """The Balboa Spa Client integration."""
 import asyncio
-import logging
 import time
 from typing import Any, Dict
 
@@ -19,9 +18,15 @@ from homeassistant.helpers.dispatcher import (
 from homeassistant.helpers.entity import Entity
 from pybalboa import BalboaSpaWifi
 
-from .const import CONF_SYNC_TIME, DEFAULT_SYNC_TIME, DOMAIN, PLATFORMS, SPA, UNSUB
-
-_LOGGER = logging.getLogger(__name__)
+from .const import (
+    _LOGGER,
+    CONF_SYNC_TIME,
+    DEFAULT_SYNC_TIME,
+    DOMAIN,
+    PLATFORMS,
+    SPA,
+    UNSUB,
+)
 
 BALBOA_CONFIG_SCHEMA = vol.Schema(
     {vol.Required(CONF_HOST): cv.string, vol.Required(CONF_NAME): cv.string}

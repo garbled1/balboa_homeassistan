@@ -5,7 +5,6 @@
         "binary_sensor",
         "climate",
         "fan",
-        "sensor",
         "switch"
     ],
     "iot_class": "Local Push"
