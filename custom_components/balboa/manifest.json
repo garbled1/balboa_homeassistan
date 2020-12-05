@@ -1,6 +1,6 @@
 {
   "domain": "balboa",
-  "name": "Balboa Spa",
+  "name": "Balboa Spa Client",
   "config_flow": true,
   "documentation": "https://www.home-assistant.io/integrations/balboa",
   "requirements": [
@@ -11,6 +11,7 @@
   "homekit": {},
   "dependencies": [],
   "codeowners": [
-    "@garbled1"
+    "@garbled1",
+    "@natekspencer"
   ]
 }

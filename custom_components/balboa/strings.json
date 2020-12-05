@@ -1,12 +1,12 @@
 {
   "config": {
-    "title": "Balboa Spa",
+    "title": "Balboa Spa Client",
     "step": {
       "user": {
-        "title": "Connect to the Balboa WiFi device",
+        "title": "Connect to the Balboa Wi-Fi device",
         "data": {
           "host": "Host",
-	  "name": "Name"
+          "name": "Name"
         }
       }
     },
@@ -16,6 +16,15 @@
     },
     "abort": {
       "already_configured": "Device is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "sync_time": "Keep your Balboa Spa Client's time synchronized with Home Assistant"
+        }
+      }
     }
   }
 }
