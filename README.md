@@ -7,7 +7,7 @@ bwa™ Wi-Fi Module (50350).
 ## Configuration
 
 There is a config flow for the spa.  After installing, 
-go to integrations, hit + to setup a new integration, search for "Balboa Spa Client",
+go to integrations in HACS, hit + to setup a new integration, search for "Balboa Spa Client",
 select that, and add the IP address or hostname of your spa's wifi adapter.
 
 If you have a blower, it will be listed as a "fan" in the climate device for
