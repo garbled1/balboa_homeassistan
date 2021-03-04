@@ -5,24 +5,24 @@
       "user": {
         "title": "Connexion au module Wi-Fi Balboa",
         "data": {
-          "host": "Hôte",
+          "host": "H\u00F4te",
           "name": "Nom"
         }
       }
     },
     "error": {
-      "cannot_connect": "Échec de la connexion, veuillez réessayer",
+      "cannot_connect": "\u00c9chec de la connexion, veuillez r\u00e9essayer",
       "unknown": "Erreur inattendue"
     },
     "abort": {
-      "already_configured": "L'appareil est déjà configuré"
+      "already_configured": "L'appareil est d\u00e9j\u00E0 configur\u00e9"
     }
   },
   "options": {
     "step": {
       "init": {
         "data": {
-          "sync_time": "Gardez l'heure du module Wi-Fi Balboa synchronisée avec Home Assistant"
+          "sync_time": "Gardez l'heure du module Wi-Fi Balboa synchronis\u00e9e avec Home Assistant"
         }
       }
     }
