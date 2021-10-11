@@ -1,7 +1,7 @@
 {
   "domain": "balboa",
   "name": "Balboa Spa Client",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "config_flow": true,
   "documentation": "https://www.home-assistant.io/integrations/balboa",
   "requirements": [
