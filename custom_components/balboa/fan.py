@@ -1,13 +1,11 @@
 """Support for Balboa Spa Pumps."""
 from homeassistant.components.fan import (
-    SPEED_LOW,
-    SPEED_OFF,
-    SUPPORT_SET_SPEED,
+    SUPPORT_PRESET_MODE,
     FanEntity,
 )
 
 from . import BalboaEntity
-from .const import _LOGGER, DOMAIN, FAN_SUPPORTED_SPEEDS, PUMP, SPA
+from .const import _LOGGER, DOMAIN, FAN_PRESET_MODE_OFF, FAN_PRESET_MODE_LOW, FAN_SUPPORTED_PRESET_MODES, PUMP, SPA
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
@@ -28,29 +26,29 @@ class BalboaSpaPump(BalboaEntity, FanEntity):
     def __init__(self, hass, entry, key, states):
         """Initialize the pump."""
         super().__init__(hass, entry, PUMP, key)
-        self._speed_list = FAN_SUPPORTED_SPEEDS if states > 1 else None
-        self._supported_features = SUPPORT_SET_SPEED if states > 1 else 0
+        self._preset_modes = FAN_SUPPORTED_PRESET_MODES if states > 1 else None
+        self._supported_features = SUPPORT_PRESET_MODE if states > 1 else 0
 
-    async def async_set_speed(self, speed: str) -> None:
+    async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set speed of pump."""
-        setto = FAN_SUPPORTED_SPEEDS.index(speed)
-        _LOGGER.debug(f"set {self.name} speed to {speed}")
+        setto = FAN_SUPPORTED_PRESET_MODES.index(preset_mode)
+        _LOGGER.debug(f"set {self.name} speed to {preset_mode}")
         await self._client.change_pump(self._num - 1, setto)
 
-    async def async_turn_on(self, speed: str = None, **kwargs) -> None:
+    async def async_turn_on(self, preset_mode: str = None, **kwargs) -> None:
         """Turn on pump."""
-        if speed is None:
-            speed = SPEED_LOW
-        await self.async_set_speed(speed)
+        if preset_mode is None:
+            preset_mode = FAN_PRESET_MODE_LOW
+        await self.async_set_preset_mode(preset_mode)
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn off pump."""
-        await self.async_set_speed(SPEED_OFF)
+        await self.async_set_preset_mode(FAN_PRESET_MODE_OFF)
 
     @property
-    def speed_list(self) -> list:
-        """Get the list of available speeds."""
-        return self._speed_list
+    def preset_modes(self) -> list:
+        """Get the list of available preset modes."""
+        return self._preset_modes
 
     @property
     def supported_features(self) -> int:
@@ -58,13 +56,13 @@ class BalboaSpaPump(BalboaEntity, FanEntity):
         return self._supported_features
 
     @property
-    def speed(self) -> str:
-        """Return the current speed."""
+    def preset_mode(self) -> str:
+        """Get the active preset mode."""
         pstate = self._client.get_pump(self._num - 1)
-        _LOGGER.debug(f"{self.name} speed is {FAN_SUPPORTED_SPEEDS[pstate]}")
-        if pstate >= len(FAN_SUPPORTED_SPEEDS) or pstate < 0:
-            return SPEED_OFF
-        return FAN_SUPPORTED_SPEEDS[pstate]
+        _LOGGER.debug(f"{self.name} speed is {FAN_SUPPORTED_PRESET_MODES[pstate]}")
+        if pstate >= len(FAN_SUPPORTED_PRESET_MODES) or pstate < 0:
+            return FAN_PRESET_MODE_OFF
+        return FAN_SUPPORTED_PRESET_MODES[pstate]
 
     @property
     def is_on(self):
