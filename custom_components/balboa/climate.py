@@ -166,7 +166,7 @@ class BalboaSpaClimate(BalboaEntity, ClimateEntity):
         return self._client.get_heatmode(True)
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return device specific state attributes."""
         return {
             "time": f"{self._client.time_hour:02d}:{self._client.time_minute:02d}",
