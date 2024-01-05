@@ -1,5 +1,8 @@
 """Support for Balboa Spa switches."""
-from homeassistant.components.switch import DEVICE_CLASS_SWITCH, SwitchEntity
+from homeassistant.components.switch import (
+    SwitchEntity,
+    SwitchDeviceClass
+)
 
 from . import BalboaEntity
 from .const import _LOGGER, AUX, DOMAIN, LIGHT, MISTER, SPA, TEMP_RANGE
@@ -60,7 +63,7 @@ class BalboaSpaSwitch(BalboaEntity, SwitchEntity):
     @property
     def device_class(self):
         """Return the class of this device, from component DEVICE_CLASSES."""
-        return DEVICE_CLASS_SWITCH
+        return SwitchDeviceClass.SWITCH
 
     @property
     def icon(self):
