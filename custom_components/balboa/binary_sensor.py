@@ -1,7 +1,7 @@
 """Support for Balboa Spa binary sensors."""
 from homeassistant.components.binary_sensor import (
-    DEVICE_CLASS_MOVING,
     BinarySensorEntity,
+    BinarySensorDeviceClass,
 )
 
 from . import BalboaEntity
@@ -44,7 +44,7 @@ class BalboaSpaBinarySensor(BalboaEntity, BinarySensorEntity):
     @property
     def device_class(self):
         """Return the class of this device, from component DEVICE_CLASSES."""
-        return DEVICE_CLASS_MOVING
+        return BinarySensorDeviceClass.MOVING
 
     @property
     def icon(self):
